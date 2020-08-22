@@ -22,6 +22,8 @@ public class Weather {
 		this.id = weatherJSON.getSys().getId();
 	}
 	
+	public Weather() {}
+	
 	public Double doubleTemperatureC() {
 		if(this.temperatureC != null) {
 			return new Double(this.temperatureC);

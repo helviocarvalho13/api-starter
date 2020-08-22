@@ -34,13 +34,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		clients.inMemory()
 			.withClient("apistarter-mobile-flutter")
 			.secret(passwordEncoder.encode("@p1st@rt3r-m0b1l3-flutt3r"))
-			.scopes("noScope")
+			.scopes("/playlists")
 			.authorizedGrantTypes("password")
 			.accessTokenValiditySeconds(1800)
 		.and()
 			.withClient("apistater-web-angular")
 			.secret(passwordEncoder.encode("@p1st@t3r-w3b-@ngul@r"))
-			.scopes("/playlists")
+			.scopes("/playlists", "/statistic")
 			.authorizedGrantTypes("password")
 			.accessTokenValiditySeconds(1800);
 			

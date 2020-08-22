@@ -1,9 +1,9 @@
 package com.ingaia.apistarter.services;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ingaia.apistarter.model.City;
 import com.ingaia.apistarter.model.openweather.Weather;
@@ -16,12 +16,13 @@ public class CityService {
 	private CityRepository cityRepo;
 	
 	@Transactional
-	public void save(Weather weather) {
+	public City save(Weather weather) {
 		City city = new City();
 		city.setCity(weather.getCity());
 		city.setCountry(weather.getCountry());
 		city.setId(weather.getId());
-		cityRepo.save(city);
-		
+		City c = cityRepo.save(city);
+		return c;
 	}
+	
 }
