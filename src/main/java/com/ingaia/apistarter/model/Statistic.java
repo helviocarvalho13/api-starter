@@ -1,5 +1,7 @@
 package com.ingaia.apistarter.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,8 +14,13 @@ import lombok.Setter;
 @Table(name = "VW_STATISTIC")
 @Getter
 @Setter
-public class Statistic {
+public class Statistic implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2769918814085274219L;
+
 	@Id
 	@Column(name = "CODE")
 	private Long code;
