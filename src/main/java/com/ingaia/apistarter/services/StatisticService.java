@@ -3,7 +3,6 @@ package com.ingaia.apistarter.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ public class StatisticService {
 	@Autowired
 	private StatisticRepository statisticRepository;
 	
-	@Cacheable("statistics")
 	public List<Statistic> returnStatistics(){
 		List<Statistic> statistics = statisticRepository.findAll();
 		
