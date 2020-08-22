@@ -24,9 +24,7 @@ public class CorsFilter implements Filter{
 
 	@Autowired
 	private ApistarterProperty apistarterProperty;
-	
-	//private String origemPermitida = "http://localhost:8080";
-	
+		
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
