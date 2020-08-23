@@ -28,15 +28,21 @@ public class OpenWeatherService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		
 		HttpEntity<?> request = new HttpEntity<>(headers);
-		ResponseEntity<WeatherJSON> weatherJSON = restTemplate.exchange(url, HttpMethod.GET, request, WeatherJSON.class);
+		ResponseEntity<WeatherJSON> weatherJSON = null;
+		try {
+			weatherJSON = restTemplate.exchange(url, HttpMethod.GET, request, WeatherJSON.class);
+		}catch (Exception e) {
+			throw new EmptyResultDataAccessException(1);
+		}
 		
-		if(weatherJSON.getStatusCode().equals(HttpStatus.OK)) {
-			return new Weather(weatherJSON.getBody());
+		if(weatherJSON != null) {
+			if(weatherJSON.getStatusCode().equals(HttpStatus.OK)) {
+				return new Weather(weatherJSON.getBody());
+			}
 		}
 		
 		throw new EmptyResultDataAccessException(1);
+		
 	}
-
 }

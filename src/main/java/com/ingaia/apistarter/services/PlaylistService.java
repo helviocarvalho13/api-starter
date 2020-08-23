@@ -30,8 +30,8 @@ public class PlaylistService {
 	@Autowired
 	private StatisticService statisticService;
 	
-	public Playlist returnPlaylist(String cidade) {
-		Weather weather = openWeatherService.returnWeather(cidade);
+	public Playlist returnPlaylist(String city) {
+		Weather weather = openWeatherService.returnWeather(city);
 		cityService.save(weather);
 		String category = weather.categoriaSpotify();
 		
@@ -44,7 +44,9 @@ public class PlaylistService {
 		ResponseEntity<MusicJSON> musicsJSON = spotifyService.returnMusicsByPlaylistSpotify(url);
 		
 		List<MusicSuggestion> suggestions = new ArrayList<MusicSuggestion>();
+		
 		musicsJSON.getBody().getTracks().getItems().forEach(m -> suggestions.add(new MusicSuggestion(m.getTrack().getArtists() ,m.getTrack().getName())));
+		
 		return new Playlist(suggestions);
 	}
 

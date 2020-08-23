@@ -32,6 +32,6 @@ public class Statistic implements Serializable{
 	private String city;
 	
 	@Column(name = "TIMES_SEARCHED")
-	private Long timesSeached;
+	private Long timesSearched;
 	
 }

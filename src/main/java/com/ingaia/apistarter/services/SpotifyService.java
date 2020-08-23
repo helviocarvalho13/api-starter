@@ -41,13 +41,23 @@ public class SpotifyService {
 		map.add("grant_type", "client_credentials");
 		
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headersToken);
+		ResponseEntity<TokenSpotify> response = null;
 		
-		ResponseEntity<TokenSpotify> response = restTemplate.postForEntity(URL_TOKEN_SPOTIFY, entity, TokenSpotify.class);
-		if(!response.getStatusCode().equals(HttpStatus.OK)) {
+		try {
+			response = restTemplate.postForEntity(URL_TOKEN_SPOTIFY, entity, TokenSpotify.class);
+		}catch (Exception e) {
 			throw new EmptyResultDataAccessException(1);
 		}
 		
-		TokenSpotify.scopedToken = response.getBody();
+		if(response != null) {
+			if(response.getStatusCode().equals(HttpStatus.OK)) {
+				TokenSpotify.scopedToken = response.getBody();
+			}
+		}else {
+			throw new EmptyResultDataAccessException(1);
+		}
+		
+		
 	}
 	
 	public String returnUrlOneOfThePlaylistsSpotifyByCategory(String category){
@@ -56,16 +66,23 @@ public class SpotifyService {
 		HttpHeaders headers = returnHttpHeaders();
 		
 		HttpEntity<?> request = new HttpEntity<>(headers);
-		ResponseEntity<CategoryJSON> playlistCategoryResponse = restTemplate.exchange(url, HttpMethod.GET, request, CategoryJSON.class);
-		
-		if(playlistCategoryResponse.getStatusCode().equals(HttpStatus.OK)) {
-			int qtdItems = playlistCategoryResponse.getBody().getPlaylists().getItems().size();
-			return playlistCategoryResponse.getBody().getPlaylists().getItems().get(Util.getRandomNumber(0, qtdItems)).getHref();
+		ResponseEntity<CategoryJSON> playlistCategoryResponse = null;
+		try {
+			playlistCategoryResponse = restTemplate.exchange(url, HttpMethod.GET, request, CategoryJSON.class);
+		}catch (Exception e) {
+			throw new EmptyResultDataAccessException(1);
 		}
 		
-		if(playlistCategoryResponse.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
-			TokenSpotify.scopedToken = null;
-			throw new UnauthorizedAccessException("1L");
+		if(playlistCategoryResponse != null) {
+			if(playlistCategoryResponse.getStatusCode().equals(HttpStatus.OK)) {
+				int qtdItems = playlistCategoryResponse.getBody().getPlaylists().getItems().size();
+				return playlistCategoryResponse.getBody().getPlaylists().getItems().get(Util.getRandomNumber(0, qtdItems)).getHref();
+			}
+			
+			if(playlistCategoryResponse.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+				TokenSpotify.scopedToken = null;
+				throw new UnauthorizedAccessException("1L");
+			}
 		}
 		
 		throw new EmptyResultDataAccessException(1);
@@ -79,15 +96,24 @@ public class SpotifyService {
 		HttpHeaders headers = returnHttpHeaders();
 		
 		HttpEntity<?> request = new HttpEntity<>(headers);
-		ResponseEntity<MusicJSON> musicsResponse = restTemplate.exchange(url, HttpMethod.GET, request, MusicJSON.class);
+		ResponseEntity<MusicJSON> musicsResponse = null;
 		
-		if(musicsResponse.getStatusCode().equals(HttpStatus.OK)) {
-			return musicsResponse;
+		
+		try {
+			musicsResponse = restTemplate.exchange(url, HttpMethod.GET, request, MusicJSON.class);
+		}catch (Exception e) {
+			throw new EmptyResultDataAccessException(1);
 		}
 		
-		if(musicsResponse.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
-			TokenSpotify.scopedToken = null;
-			throw new UnauthorizedAccessException("1L");
+		if(musicsResponse != null) {
+			if(musicsResponse.getStatusCode().equals(HttpStatus.OK)) {
+				return musicsResponse;
+			}
+			
+			if(musicsResponse.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+				TokenSpotify.scopedToken = null;
+				throw new UnauthorizedAccessException("1L");
+			}
 		}
 		
 		throw new EmptyResultDataAccessException(1);
