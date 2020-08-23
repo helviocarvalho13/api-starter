@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.ingaia.apistarter.exceptions.NoContentDataAccessException;
 import com.ingaia.apistarter.exceptions.UnauthorizedAccessException;
 
 @ControllerAdvice
@@ -55,6 +56,16 @@ public class ApiStarterExceptionHandler extends ResponseEntityExceptionHandler{
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+	}
+	
+	@ExceptionHandler({NoContentDataAccessException.class})
+	public ResponseEntity<Object> handleNoContentDataAccessException(EmptyResultDataAccessException ex, 
+			WebRequest request){
+		
+		String mensagemUsuario = messageSource.getMessage("conteudo.nao.encontrado", null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NO_CONTENT, request);
 	}
 	
 	@ExceptionHandler({EmptyResultDataAccessException.class})

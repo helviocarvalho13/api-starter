@@ -10,4 +10,5 @@ public class ItemPlaylistJSON {
 	private String id;
 	private String description;
 	private String href;
+	private ExternalUrlsJSON external_urls;
 }

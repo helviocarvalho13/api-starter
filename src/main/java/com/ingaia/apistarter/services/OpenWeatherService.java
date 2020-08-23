@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.ingaia.apistarter.exceptions.NoContentDataAccessException;
 import com.ingaia.apistarter.model.openweather.Weather;
 import com.ingaia.apistarter.model.openweather.json.WeatherJSON;
 
@@ -33,16 +34,20 @@ public class OpenWeatherService {
 		try {
 			weatherJSON = restTemplate.exchange(url, HttpMethod.GET, request, WeatherJSON.class);
 		}catch (Exception e) {
-			throw new EmptyResultDataAccessException(1);
+			throw new EmptyResultDataAccessException("API Open Weather Maps: Exceção gerada ao consultar a cidade", 1);
 		}
 		
 		if(weatherJSON != null) {
+			if(weatherJSON.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+				throw new NoContentDataAccessException("API Open Weather Maps: Recurso encotrado mas sem conteúdo");
+			}
+			
 			if(weatherJSON.getStatusCode().equals(HttpStatus.OK)) {
 				return new Weather(weatherJSON.getBody());
 			}
 		}
 		
-		throw new EmptyResultDataAccessException(1);
+		throw new NoContentDataAccessException("API Open Weather Maps: Não houve resposta para a requisição. A resposta está com valor NULL.");
 		
 	}
 }

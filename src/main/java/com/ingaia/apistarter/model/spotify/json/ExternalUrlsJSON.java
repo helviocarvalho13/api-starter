@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MusicJSON {
-	private TrackJSON tracks;
-	
+public class ExternalUrlsJSON {
+	private String spotify;
 }

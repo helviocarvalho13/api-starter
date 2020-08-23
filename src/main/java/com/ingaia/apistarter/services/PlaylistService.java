@@ -1,6 +1,7 @@
 package com.ingaia.apistarter.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +40,15 @@ public class PlaylistService {
 			spotifyService.returnTokenSpotify();
 		}
 		
-		String url = spotifyService.returnUrlOneOfThePlaylistsSpotifyByCategory(category);
+		HashMap<String, String> responseUrls = spotifyService.returnUrlOneOfThePlaylistsSpotifyByCategory(category);
 		
-		ResponseEntity<MusicJSON> musicsJSON = spotifyService.returnMusicsByPlaylistSpotify(url);
+		ResponseEntity<MusicJSON> musicsJSON = spotifyService.returnMusicsByPlaylistSpotify(responseUrls.get("urlApiSpotify"));
 		
 		List<MusicSuggestion> suggestions = new ArrayList<MusicSuggestion>();
 		
-		musicsJSON.getBody().getTracks().getItems().forEach(m -> suggestions.add(new MusicSuggestion(m.getTrack().getArtists() ,m.getTrack().getName())));
+		musicsJSON.getBody().getTracks().getItems().forEach(m -> suggestions.add(new MusicSuggestion(m.getTrack().getArtists(), m.getTrack().getName())));
 		
-		return new Playlist(suggestions);
+		return new Playlist(suggestions, responseUrls.get("urlOpenSpotify"));
 	}
 
 	@Transactional(readOnly = true)
